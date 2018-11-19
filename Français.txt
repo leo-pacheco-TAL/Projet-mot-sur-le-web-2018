@@ -1,0 +1,6 @@
+<html>
+<head><title>TABLEAUX URL</title>
+<meta charset="UTF-8" /></head>
+<body>
+</body>
+</html>
