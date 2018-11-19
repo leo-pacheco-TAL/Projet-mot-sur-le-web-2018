@@ -1,2 +1,3 @@
-# Projet-mot-sur-le-web-2018
-Premier projet encadré du M1 TAL
+Grandes étapes :
+PHASE 1 = consitution du corpus
+PHASE 2 = analyse des données
