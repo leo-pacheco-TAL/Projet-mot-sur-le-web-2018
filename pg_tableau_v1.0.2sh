@@ -104,6 +104,11 @@ compteurtableau=1;
 for fichier in $(ls $1)
 	do 
 		html_body($2);
+	compteur=1;
+	for ligne in $(cat $1/$fichier)
+	do
+		check_code_sortie()
+
 #-------------------------------------------------------------------------------
 # Phase 3 : traitement de chaque ligne du fichier d'URL en cours
 #-------------------------------------------------------------------------------
