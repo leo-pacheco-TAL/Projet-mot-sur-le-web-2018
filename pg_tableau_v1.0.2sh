@@ -92,6 +92,11 @@ function minigrep(){
 function index(){
 	egrep -o "\w+" ./DUMP-TEXT/$compteurtableau-$compteur.txt | sort | uniq -c | sort -r > ./DUMP-TEXT/index-$compteurtableau-$compteur.txt ;
 }
+
+#nouvelles colonnes
+function add_columns(){
+	"<tr><td>$compteur</td><td>$code_sortie</td><td><a target=\"_blank\" href=\"$ligne\">$ligne</a></td><td><a target=\"_blank\" href=\"../PAGES-ASPIREES/$compteurtableau-$compteur.html\">page aspirée n° $compteur</a></td><td>$ENCODAGE</td><td><a target=\"_blank\" href=\"../DUMP-TEXT/$compteurtableau-$compteur.txt\">DUMP  n° $compteur</a></td><td><a href=\"../CONTEXTES/$compteurtableau-$compteur.txt\">CT $compteurtableau-$compteur</a></td><td><a href=\"../CONTEXTES/$compteurtableau-$compteur.html\">CTh $compteurtableau-$compteur</a></td><td>$nbmotif</td><td><a href=\"../DUMP-TEXT/index-$compteurtableau-$compteur.txt\">Ind $compteurtableau-$compteur</a></td><td><a href=\"../DUMP-TEXT/bigramme-$compteurtableau-$compteur.txt\">Bigr $compteurtableau-$compteur</a></td></tr>" >> $2 ;
+}
 #ECRITURE DU SCRIPT
 
 #-------------------------------------------------------------------------------
