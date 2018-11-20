@@ -1,0 +1,93 @@
+#!/usr/bin/bash
+# MODE D'EMPLOI DU PROGRAMME :
+#               bash programme_tableau.sh NOM_DOSSIER_URL NOM_FICHIER_HTML MOTIF
+# le programme prend 3 arguments : 
+# - le premier est le nom du dossier contenant les fichiers d'URLs, i.e l'INPUT : $1 par la suite
+# - le second est le fichier TABLEAU au format HTML : $2 par la suite
+# - le troisième correspond aux différentes formes (une expression régulières) dans les différentes langues, soit le motif. $3
+# les 3 sont fournis dans la ligne de commande via un chemin relatif par exemple
+#-------------------------------------------------------------------------------
+#FONCTIONS A ECRIRE AU PREALABLE
+#-------------------------------------------------------------------------------
+#création du tableau
+
+#écriture tête du fichier
+function html_head($2){
+	echo "<html>" > $2 ;
+	echo "<head><title>TABLEAUX URL</title>
+	<meta charset=\"UTF-8\" /></head>" >> $2 ;
+	echo "<body>" >> $2 ;
+}
+
+#écriture corps du fichier
+function html_body($2){
+	echo "<table align=\"center\" border=\"1\">" >> $2 ;
+    echo "<tr bgcolor=\"yellow\"><td>N°</td><td>CodeHttp</td><td>URL</td><td>Page Aspirée</td><td>Encodage</td><td>Dump</td><td>Contexte</td><td>Contexte HTML</td><td>Fq Motif</td><td>Index</td><td>Bigramme</td></tr>" >> $2 ;
+}
+
+#écriture fin de fichier
+function html_tail($2){
+	echo "</body>" >> $2 ;
+	echo "</html>" >> $2 ;
+}
+#-------------------------------------------------------------------------------
+#vérif code sortie, aspiration & dump des URLS
+function check_code_sortie(){
+
+}
+
+function aspi_URL(){
+
+}
+function dump_URL(){
+
+}
+#-------------------------------------------------------------------------------
+#ENCODAGE
+#Trouver encodage
+function find_enc(){
+
+}
+#Encodage ok (UTF-8)
+function enc_ok(){
+
+}
+#Encodage mauvais (non UTF-8)
+function enc_bad(){
+
+}
+#-------------------------------------------------------------------------------
+#Motifs correspondant aux formes recherchés sous forme de de regex. $3
+function regexFR ($3){
+
+}
+function regexEN ($3){
+
+}
+function regexJA ($3){
+
+}
+#-------------------------------------------------------------------------------
+#bigrams
+#contextes
+
+#ECRITURE DU SCRIPT
+
+#-------------------------------------------------------------------------------
+# Phase 1 : ECRITURE ENTETE FICHIER HTML
+html_head($2);
+#-------------------------------------------------------------------------------
+# Phase 2 : traitement de chacun des fichier d'URLs
+#Compteur pour le tableau
+compteurtableau=1;
+for fichier in $(ls $1)
+	do 
+		html_body($2);
+#-------------------------------------------------------------------------------
+# Phase 3 : traitement de chaque ligne du fichier d'URL en cours
+#-------------------------------------------------------------------------------
+# Phase 4 : ECRITURE FIN DE FICHIER HTML
+html_tail($2);
+#-------------------------------------------------------------------------------
+# c'est fini
+exit;
