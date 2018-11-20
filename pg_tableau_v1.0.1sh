@@ -7,8 +7,7 @@
 # - le troisième correspond aux différentes formes (une expression régulières) dans les différentes langues, soit le motif. $3
 # les 3 sont fournis dans la ligne de commande via un chemin relatif par exemple
 #-------------------------------------------------------------------------------
-#FONCTIONS A ECRIRE AU PREALABLE
-#-------------------------------------------------------------------------------
+#FONCTIONS :
 #création du tableau
 
 #écriture tête du fichier
