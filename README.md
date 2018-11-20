@@ -1,3 +1,4 @@
+!!! OUVRIR CE FICHIER POUR QU'IL S'AFFICHE CORRECTEMENT !!!
 Grandes étapes ;
 PHASE 1 = consitution du corpus;
 PHASE 2 = analyse des données;
