@@ -1,0 +1,1 @@
+﻿MOTIF=(chee+s(es?|y+|i+ng|ed)|cheese ?(shop|cakes?))|from(a+g(e(r?|rie)|ère)|e?ton)s?
