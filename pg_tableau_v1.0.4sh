@@ -1,0 +1,209 @@
+#!/usr/bin/bash
+# MODE D'EMPLOI DU PROGRAMME :
+#               bash programme_tableau.sh NOM_DOSSIER_URL NOM_FICHIER_HTML MOTIF
+# le programme prend 3 arguments : 
+# - le premier est le nom du dossier contenant les fichiers d'URLs, i.e l'INPUT : $1 par la suite
+# - le second est le fichier TABLEAU au format HTML : $2 par la suite
+# - le troisième correspond aux différentes formes (une expression régulières) dans les différentes langues, soit le motif. $3
+# les 3 sont fournis dans la ligne de commande via un chemin relatif par exemple
+#-------------------------------------------------------------------------------
+#FONCTIONS :
+#création du tableau
+
+#écriture tête du fichier
+function html_head(){
+	echo "<html>" > $2 ;
+	echo "<head><title>TABLEAUX URL</title>
+	<meta charset=\"UTF-8\" /></head>" >> $2 ;
+	echo "<body>" >> $2 ;
+}
+
+#écriture corps du fichier
+function html_body(){
+	echo "<table align=\"center\" border=\"1\">" >> $2 ;
+    echo "<tr bgcolor=\"yellow\"><td>N°</td><td>CodeHttp</td><td>URL</td><td>Page Aspirée</td><td>Encodage</td><td>Dump</td><td>Contexte</td><td>Contexte HTML</td><td>Fq Motif</td><td>Index</td><td>Bigramme</td></tr>" >> $2 ;
+}
+
+#écriture fin de fichier
+function html_tail(){
+	echo "</body>" >> $2 ;
+	echo "</html>" >> $2 ;
+}
+#-------------------------------------------------------------------------------
+#vérif code sortie, aspiration & dump des URLS
+function check_code_sortie(){
+	code_sortie=$(curl -s -L -o tmp.txt -w "%{http_code}" $ligne | tail -1) ;
+}
+
+function code_sortieOK(){
+	ENCODAGE=$(curl -sIL "$ligne" | egrep -i "charset" | cut -f2 -d"=" |  tr "[a-z]" "[A-Z]" |  tr -d "\n" |  tr -d "\r") ;
+	echo -e "$compteurtableau::$compteur::$code_sortie::$ENCODAGE::$ligne\n";
+}
+function code_sortiePOURRI(){
+	echo -e "PB....$compteurtableau::$compteur::$code_sortie::::$ligne\n";
+	echo "<tr><td>$compteur</td><td><font color=\"red\"><b>$code_sortie</b></td><td><a target=\"_blank\" href=\"$ligne\">$ligne</a></td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>" >> $2 ;
+}
+function aspi_URL(){
+	curl -sL -o  ./PAGES-ASPIREES/$compteurtableau-$compteur.html $ligne ;
+}
+function dump_URL(){
+	lynx -dump -nolist $ligne > ./DUMP-TEXT/$compteurtableau-$compteur.txt 
+}
+#-------------------------------------------------------------------------------
+#ENCODAGE
+#isoler le charset
+compteur=0;
+for fichier in $( ls ./PAGES-ASPIREES/); 
+	do
+done;
+function isolate_charset(){
+	echo $compteur; egrep -o "meta.+charset *= *[^>]+" ./PAGES-ASPIREES/$fichier | egrep -o "charset *= *[^>]+" | cut -f2 -d"=" | egrep -o "(\w|-)+" | uniq; compteur=$((compteur+1)); 
+	echo "stop, appuie sur return"; 
+	read rep; 
+}
+#Trouver encodage
+function find_enc(){
+	curl -sL -o  ./PAGES-ASPIREES/$compteurtableau-$compteur.html $ligne ;
+	ENCODAGEFILE=$(file -i ./PAGES-ASPIREES/$compteurtableau-$compteur.html | cut -d"=" -f2);
+	echo -e "ENCODAGE initial vide. ENCODAGE extrait via file : $ENCODAGEFILE \n";
+	echo -e "Il faut désormais s'assurer que cet encodage peut être OK ou pas... \n";
+}
+#Encodage ok (UTF-8)
+function enc_ok(){
+	
+}
+#Encodage mauvais (non UTF-8)
+function enc_bad(){
+
+}
+#-------------------------------------------------------------------------------
+#Motifs correspondant aux formes recherchés sous forme de regex. $3
+function regexFR(){
+
+}
+function regexEN(){
+
+}
+function regexJA(){
+
+}
+#-------------------------------------------------------------------------------
+#bigrams
+function bigrams(){
+	egrep -o "\w+" ./DUMP-TEXT/$compteurtableau-$compteur.txt > bi1.txt;
+	tail -n +2 bi1.txt > bi2.txt ;
+	paste bi1.txt bi2.txt > bi3.txt ;
+	cat bi3.txt | sort | uniq -c | sort -r >  ./DUMP-TEXT/bigramme-$compteurtableau-$compteur.txt ;
+}
+#contexte
+function context(){
+	egrep -i "$3" ./DUMP-TEXT/$compteurtableau-$compteur.txt > ./CONTEXTES/$compteurtableau-$compteur.txt;
+}
+
+function freq_motif(){
+	nbmotif=$(egrep -coi "$3" ./DUMP-TEXT/$compteurtableau-$compteur.txt);
+}
+
+function minigrep(){
+	perl ./minigrep/minigrepmultilingue.pl "utf-8" ./DUMP-TEXT/$compteurtableau-$compteur.txt ./minigrep/parametre-motif.txt ;
+	mv resultat-extraction.html ./CONTEXTES/$compteurtableau-$compteur.html ;
+}
+
+function index(){
+	egrep -o "\w+" ./DUMP-TEXT/$compteurtableau-$compteur.txt | sort | uniq -c | sort -r > ./DUMP-TEXT/index-$compteurtableau-$compteur.txt ;
+}
+
+#nouvelles colonnes
+function add_columns(){
+	"<tr><td>$compteur</td><td>$code_sortie</td><td><a target=\"_blank\" href=\"$ligne\">$ligne</a></td><td><a target=\"_blank\" href=\"../PAGES-ASPIREES/$compteurtableau-$compteur.html\">page aspirée n° $compteur</a></td><td>$ENCODAGE</td><td><a target=\"_blank\" href=\"../DUMP-TEXT/$compteurtableau-$compteur.txt\">DUMP  n° $compteur</a></td><td><a href=\"../CONTEXTES/$compteurtableau-$compteur.txt\">CT $compteurtableau-$compteur</a></td><td><a href=\"../CONTEXTES/$compteurtableau-$compteur.html\">CTh $compteurtableau-$compteur</a></td><td>$nbmotif</td><td><a href=\"../DUMP-TEXT/index-$compteurtableau-$compteur.txt\">Ind $compteurtableau-$compteur</a></td><td><a href=\"../DUMP-TEXT/bigramme-$compteurtableau-$compteur.txt\">Bigr $compteurtableau-$compteur</a></td></tr>" >> $2 ;
+}
+#-------------------------------------------------------------------------------
+#Concaténer les fichiers DUMP dans un seul fichier
+function concat_dump(){
+	echo $fichier; echo -e "<fichier=\"$fichier\">\n" >> nv-fichier.txt; 
+	cat ./DUMP-TEXT/dump-concat/$fichier >> nv-fichier.txt; 
+	echo -e "\n</fichier>\n" >> nv-fichier.txt; 
+}
+#-------------------------------------------------------------------------------
+#ECRITURE / IMPLÉMENTATION DU SCRIPT
+#-------------------------------------------------------------------------------
+# Phase 1 : ECRITURE ENTETE FICHIER HTML
+html_head $2;
+#-------------------------------------------------------------------------------
+# Phase 2 : traitement de chacun des fichier d'URLs
+#Compteur pour le tableau
+compteurtableau=1;
+for fichier in $(ls $1)
+	do 
+		html_body $2;
+#-------------------------------------------------------------------------------
+# Phase 3 : traitement de chaque ligne du fichier d'URL en cours
+	compteur=1;
+	for ligne in $(cat $1/$fichier)
+	do
+		check_code_sortie $1;
+		if [[ code_sortie = 200 ]]
+			then #URL OK
+				# recherche de l'encodage du l'URL en cours
+				code_sortieOK $2;
+				if [[ $ENCODAGE == "UTF-8" ]]
+					then
+						echo -e "ENCODAGE initial <$ENCODAGE> OK : on passe au traitement \n";
+						#aspiration de l'URL
+						aspi_URL $1;
+						#dump de l'URL
+						dump_URL $1;
+						#contexte, bigramme, comptage occurrences dans DUMP
+						context $3;
+						freq_motif $3;
+						minigrep $3;
+						index;
+						bigrams $3;
+						#ajout nouvelles colonnes
+						add_columns $2;
+					else
+						echo -e "==> il faut traiter les URLs OK qui ne sont pas a priori en UTF8\n" ;
+						echo -e "ENCODAGE initial : <$ENCODAGE> \n";
+						if [[ $ENCODAGE == "" ]]
+							then
+							# On cherche l'encodage de la page en appliquant la commande file sur la page aspirée (++++++)
+								find_enc $1;
+								#est-ce que ENCODAGEFILE vaut UTF8 ou non ???
+								if [[ $ENCODAGEFILE == "UTF-8" ]]
+									then
+										#contextes et bigrams
+										#aspiration de l'URL
+										aspi_URL $1;
+										#dump de l'URL
+										dump_URL $1;
+										#contexte, bigramme, comptage occurrences dans DUMP
+										context $1;
+										freq_motif $3;
+										minigrep $3;
+										index;
+										bigrams $3;
+										#ajout nouvelles colonnes
+										add_columns $2;
+								fi
+						fi
+				fi
+			else
+				code_sortiePOURRI $2;
+		fi
+		compteur!$((compteur + 1));
+		echo -e "_____________________________________________________________________\n";
+	done;
+	echo "</table>" >> $2 ;
+    echo "<hr color=\"red\" />" >> $2 ;
+    compteurtableau=$((compteurtableau + 1));
+done;
+#concat dump
+for fichier in $( ls ./DUMP-TEXT/dump-concat/ |egrep "\.txt") 
+	do concat_dump $1;
+done;
+#-------------------------------------------------------------------------------
+# Phase 4 : ECRITURE FIN DE FICHIER HTML
+html_tail $2;
+#-------------------------------------------------------------------------------
+# c'est fini
+exit;
