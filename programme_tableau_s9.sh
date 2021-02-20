@@ -71,9 +71,14 @@ for fichier in $(ls $1)
 								echo -e "ENCODAGE initial vide. ENCODAGE extrait via file : $ENCODAGEFILE \n";
 								echo -e "Il faut désormais s'assurer que cet encodage peut être OK ou pas... \n";
 								# LA SUITE : est-ce que ENCODAGEFILE vaut UTF8 ou non ??? à vous de jouer...
-									#if ENCODAGEFILE == utf8
-									#then
+									if ENCODAGEFILE == "UTF-8"
+									then
 										# on refait le même traitement que ci-dessus !! en l'adaptant si nécessaire
+										echo -e "ENCODAGE initial <$ENCODAGE> OK : on passe au traitement \n";
+										curl -sL -o  ./PAGES-ASPIREES/$compteurtableau-$compteur.html $ligne ;
+										lynx -dump -nolist $ligne > ./DUMP-TEXT/$compteurtableau-$compteur.txt ;
+										#contextes et bigrams
+
 									#else
 										# on refait le même traitement que ci-dessous !! en l'adaptant si nécessaire
 									#fi
@@ -96,10 +101,10 @@ for fichier in $(ls $1)
 									fi
 							fi
 					fi
-			else # URL "pourrie", pb connexion http, on écrit quasiment rien dans la ligne du tableau !!!!
-				echo -e "PB....$compteurtableau::$compteur::$code_sortie::::$ligne\n";
-				echo "<tr><td>$compteur</td><td><font color=\"red\"><b>$code_sortie</b></td><td><a target=\"_blank\" href=\"$ligne\">$ligne</a></td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>" >> $2 ;
-			fi
+		else #URL "pourrie", pb connexion http, on écrit quasiment rien dans la ligne du tableau !!!!
+			echo -e "PB....$compteurtableau::$compteur::$code_sortie::::$ligne\n";
+			echo "<tr><td>$compteur</td><td><font color=\"red\"><b>$code_sortie</b></td><td><a target=\"_blank\" href=\"$ligne\">$ligne</a></td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>" >> $2 ;
+		fi
         compteur=$((compteur + 1));
 		echo -e "_____________________________________________________________________\n";
 		done;
